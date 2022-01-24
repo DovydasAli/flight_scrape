@@ -126,17 +126,42 @@ print(seven_days_from_twenty)
 #             print(payload)
 #         iteration += 1
 
-website_ten = requests.get(
-    f'https://www.fly540.com/flights/nairobi-to-mombasa?isoneway=0&depairportcode=NBO&arrvairportcode=MBA&date_from='
-    f'{ten_days_from_now.strftime("%a")}%2C+{ten_days_from_now.strftime("%#d")}+{ten_days_from_now.strftime("%b")}+'
-    f'{ten_days_from_now.strftime("%Y")}&date_to={seven_days_from_ten.strftime("%a")}%2C+{seven_days_from_ten.strftime("%#d")}'
-    f'+{seven_days_from_ten.strftime("%b")}+{seven_days_from_ten.strftime("%Y")}'
-    f'&adult_no=1&children_no=0&infant_no=0&currency=USD&searchFlight=').text
+# website_ten = requests.get(
+#     f'https://www.fly540.com/flights/nairobi-to-mombasa?isoneway=0&depairportcode=NBO&arrvairportcode=MBA&date_from='
+#     f'{ten_days_from_now.strftime("%a")}%2C+{ten_days_from_now.strftime("%#d")}+{ten_days_from_now.strftime("%b")}+'
+#     f'{ten_days_from_now.strftime("%Y")}&date_to={seven_days_from_ten.strftime("%a")}%2C+{seven_days_from_ten.strftime("%#d")}'
+#     f'+{seven_days_from_ten.strftime("%b")}+{seven_days_from_ten.strftime("%Y")}'
+#     f'&adult_no=1&children_no=0&infant_no=0&currency=USD&searchFlight=').text
+#
+# flight_page = BeautifulSoup(website_ten, 'html.parser')
+#
+# block_inbound_details = flight_page.find('div', class_='fly5-result')  # find arrival details
+# print(block_inbound_details)
+# for x in block_inbound_details:
+#     print(x)
 
-print(type(website_ten))
-print(website_ten)
+html = '<div class="fly5-bkdown"> <strong>NBO - MBA</strong><br><div>Fare(Pax 1 - Adult) <span class="num">37.00</span></div><div>Fare(Pax 2 - Adult) <span class="num">37.00</span></div><div>Tax (Pax 1 - Adult) <span class="num">6.00</span></div><div>Tax (Pax 2 - Adult) <span class="num">6.00</span></div>><div>Tax (Pax 3 - Adult) <span class="num">6.00</span></div><div class="subtotal"> <strong>Subtotal:<span class="num">86.00</span></strong> </div></div>' \
+       '<div class="fly5-bkdown"> <strong>MBA - NBO</strong><br><div>Fare(Pax 1 - Adult) <span class="num">34.00</span></div><div>Fare(Pax 2 - Adult) <span class="num">34.00</span></div><div>Tax (Pax 1 - Adult)<span class="num">6.00</span></div><div>Tax (Pax 2 - Adult)<span class="num">6.00</span></div><div>Tax (Pax 3 - Adult) <span class="num">6.00</span></div><div class="subtotal"> <strong>Subtotal:<span class="num">80.00</span></strong> </div></div>'
 
-flight_page = BeautifulSoup(website_ten, 'html.parser')
+page_html = BeautifulSoup(html, 'html.parser')
 
-print(type(flight_page))
-print(flight_page)
+block_taxes = page_html.find_all('div', class_="fly5-bkdown")  # find arrival details
+pattern_tax = re.compile(r'Tax.*?(\d+[.]\d+)')  # regex to find taxes in flight detail page
+
+# for block in block_taxes:
+#     print(block)
+#     if tax_list:
+#         tax_list[0] = (float(pattern_tax.search(block.text).group(2)))
+#     else:
+#         tax_list.append(float(pattern_tax.search(block.text).group(2)))
+
+taxes = re.findall(pattern_tax, str(block_taxes))
+
+tax_final = 0
+flight_tax = []
+
+for tax in taxes:
+    tax_final += float(tax)
+flight_tax.append(tax_final)
+
+print(flight_tax)

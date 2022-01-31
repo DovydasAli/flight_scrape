@@ -12,17 +12,17 @@ import datetime
 import logging
 
 # used for getting requests and posts to page enable to get log file and detailed log in console
-# try:
-#     import http.client as http_client
-# except ImportError:
-#     import http.client as http_client
-# http_client.HTTPConnection.debuglevel = 1
-#
-# logging.basicConfig(filename="page_log.log", level=logging.DEBUG)
-# logging.getLogger().setLevel(logging.DEBUG)
-# requests_log = logging.getLogger("requests.packages.urllib3")
-# requests_log.setLevel(logging.DEBUG)
-# requests_log.propagate = False
+try:
+    import http.client as http_client
+except ImportError:
+    import http.client as http_client
+http_client.HTTPConnection.debuglevel = 1
+
+logging.basicConfig(filename="page_log.log", level=logging.DEBUG)
+logging.getLogger().setLevel(logging.DEBUG)
+requests_log = logging.getLogger("requests.packages.urllib3")
+requests_log.setLevel(logging.DEBUG)
+requests_log.propagate = False
 
 # date configuration
 # today's date
@@ -66,7 +66,7 @@ websites = [website_ten, website_twenty]
 
 # creates initial flight list file and adds header
 with open('flight_list.csv', mode='w', newline='', encoding="utf-8") as csvfile:
-    writer = csv.writer(csvfile, delimiter=';')
+    writer = csv.writer(csvfile, delimiter=',')
 
     writer.writerow(['outbound_departure_airport', 'outbound_arrival_airport', 'outbound_departure_time',
                      'outbound_arrival_time', 'inbound_departure_airport', 'inbound_arrival_airport',
@@ -260,7 +260,7 @@ for website in websites:
 
             # writes all of the information into a csv file
             with open('flight_list.csv', mode='a', newline='', encoding="utf-8") as csvfile:
-                spamwriter = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
                 data = list(rows)
                 for row in data:
